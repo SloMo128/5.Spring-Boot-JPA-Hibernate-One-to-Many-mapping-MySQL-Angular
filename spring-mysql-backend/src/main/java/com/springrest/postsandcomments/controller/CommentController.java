@@ -54,7 +54,7 @@ public class CommentController {
     }
 
     // Comments
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/posts/comments/{postId}")
     public ResponseEntity<Object> getAllCommentsByPostId(@PathVariable("postId") Long postId,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "100") int size,
@@ -71,7 +71,7 @@ public class CommentController {
         }
     }
     
-    @PostMapping("/posts/{postId}/comments")
+    @PostMapping("/posts/commentspost/{postId}")
     public ResponseEntity<Comment> addCommentToPost(
             @PathVariable("postId") Long postId,
             @Valid @RequestBody Comment comment) {
@@ -113,7 +113,7 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    @DeleteMapping("/postsdelite/{postId}/commentsdelite/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId) {
