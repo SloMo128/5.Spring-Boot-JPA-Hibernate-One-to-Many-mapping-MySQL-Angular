@@ -10,8 +10,8 @@ export class PostApiService {
 
     constructor(private http: HttpClient){}
 
-    getListPost(): Observable<Post[]> {
-        return this.http.get<Post[]>(this.baseURL + 'posts')
+    getListPost(params: HttpParams): Observable<Post[]> {
+        return this.http.get<Post[]>(this.baseURL + 'posts',  { params })
     }
 
     getPost(id: string): Observable<Post> {

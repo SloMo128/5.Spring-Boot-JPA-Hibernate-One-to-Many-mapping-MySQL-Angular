@@ -7,11 +7,26 @@
   <span class="sr-only"></span>
 </div>
 
-<div *ngFor="let post of posts; let i = index" class="post mb-4 p-3 border">
-  <div class="container">
+<div *ngIf="isLoadingPage">
+  <button type="button" (click)="pageDirection()" class="btn btn-light">
+    <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
+    <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
+  </button>
+</div>
+
+<div *ngIf="isLoadingPage">
+  <div *ngFor="let post of posts| 
+            paginate: { itemsPerPage: customerPage, 
+            currentPage: pagination + 1, 
+            totalItems: totalCustomers}, let i = index" class="container">
+
     <h3><strong>{{ post.title }}</strong></h3>
-    <small >{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small> 
+    <small>{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small>
     <p class="mt-2">{{ post.description }}</p>
-    <a href="/post">continue reading...</a>
+    <a href="/post" (click)="saveDataAndNavigate(post.id)">continue reading...</a>
   </div>
+</div>
+
+<div *ngIf="isLoadingPage" class="d-flex justify-content-center">
+  <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
 </div>

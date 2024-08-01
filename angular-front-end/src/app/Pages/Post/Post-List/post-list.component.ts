@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -15,17 +16,28 @@ export class PostListComponent implements OnInit {
   feedback = new FeedBack("", "");
   isLoading: boolean = true;
   isLoadingPage: boolean = false;
-  //designations: postProfile[] = [];
+  
+  totalCustomers: number = 0;
+  pagination: number = 0;
+  customerPage: number = 5;
+  sortField: string = "title";
+  sortOrder: string = "DESC";
+  page = this. sortOrder
+  chengePageIco: boolean = false
 
   constructor(
       private postService: PostApiService,
       //private postProfileSerice: postProfileService,
       private router: Router
   ) { }
+  
+  pageDirection(page){
+    this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+    this.getList();
+  }
 
   ngOnInit(): void {
       this.getList();
-
       this.feedback = { feedbackType: '', feedbackmsg: '' };
 
       localStorage.removeItem('postId');
@@ -33,11 +45,18 @@ export class PostListComponent implements OnInit {
 
   getList(): void {
       this.posts = [];
-      this.postService.getListPost().subscribe({
+      let params = new HttpParams;
+
+      params = params.append('page', "" + this.pagination);
+      params = params.append('size', "" + this.customerPage);
+      params = params.append('sort', this.sortField);
+      params = params.append('order', this.sortOrder)
+
+      this.postService.getListPost(params).subscribe({
           next: (data: any) => {
               if (data.length !== 0) {
                   this.posts = data.posts;
-                  console.log(data)
+                  this.totalCustomers = data.postsCount;
                   this.isLoadingPage = true;
                   this.isLoading = false;
               };
@@ -56,6 +75,11 @@ export class PostListComponent implements OnInit {
               this.feedback = { feedbackType: 'success', feedbackmsg: 'loaded' };
           },
       });
+  }
+
+  renderPage(event: number) {
+    this.pagination = event - 1;
+    this.getList();
   }
 
   /*deletepost(id: string, index) {
@@ -78,7 +102,7 @@ export class PostListComponent implements OnInit {
 
   saveDataAndNavigate(id: string) {
       localStorage.setItem('postId', id);
-      this.router.navigate(['/editpost/']);
+      this.router.navigate(['/post/']);
   }
 
 }
