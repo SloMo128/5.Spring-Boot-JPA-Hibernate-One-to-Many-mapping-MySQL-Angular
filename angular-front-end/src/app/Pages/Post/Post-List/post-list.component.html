@@ -1,3 +1,17 @@
-<p>
-  post-list works!
-</p>
+<div *ngIf="feedback.feedbackType === 'error'" class="alert alert-danger d-flex align-items-center" role="alert">
+  <div class="spinner-grow text-danger" role="status"></div>
+  <span class="ms-2">{{ feedback.feedbackmsg }}</span>
+</div>
+
+<div *ngIf="isLoading" class="spinner-border text-info" role="status">
+  <span class="sr-only"></span>
+</div>
+
+<div *ngFor="let post of posts; let i = index" class="post mb-4 p-3 border">
+  <div class="container">
+    <h3><strong>{{ post.title }}</strong></h3>
+    <small >{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small> 
+    <p class="mt-2">{{ post.description }}</p>
+    <a href="/post">continue reading...</a>
+  </div>
+</div>
