@@ -1,3 +1,32 @@
-<p>
-  comment-list works!
-</p>
+<div *ngIf="feedback.feedbackType === 'error'" class="alert alert-danger d-flex align-items-center" role="alert">
+  <div class="spinner-grow text-danger" role="status"></div>
+  <span class="ms-2">{{ feedback.feedbackmsg }}</span>
+</div>
+
+<div *ngIf="isLoadingPage">
+  <button type="button" (click)="pageDirection()" class="btn btn-light">
+    <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
+    <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
+  </button>
+</div>
+
+<div *ngIf="isLoadingPage">
+  <div *ngFor="let comm of comments| 
+            paginate: { itemsPerPage: customerPage, 
+            currentPage: pagination + 1, 
+            totalItems: totalCustomers}, let i = index" class="container border p-3 mb-3">
+
+    <div style="display: flex; align-items: center">
+      <p style="color: #2ca9bc;"><strong>{{ comm.username }}</strong></p>&nbsp;
+      <img src="assets/img/edit.png" style="width:20px; height:20px;" />&nbsp;
+      <a (click)="deliteComm(comm.id, i)"><img src="assets/img/delete.png" style="width:20px; height:20px;" /></a>&nbsp;
+      <small>{{ comm.createdAt | date:'fullDate' }} - {{ comm.createdAt | date:'mediumTime' }}</small>
+    </div>
+
+    <p>{{ comm.body }} </p>
+  </div>
+</div>
+
+<div *ngIf="isLoadingPage" class="d-flex justify-content-center">
+  <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
+</div>

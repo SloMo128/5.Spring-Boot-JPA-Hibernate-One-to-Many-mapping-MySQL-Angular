@@ -58,7 +58,8 @@ public class CommentController {
     public ResponseEntity<Object> getAllCommentsByPostId(@PathVariable("postId") Long postId,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "100") int size,
-            @RequestParam(required = false, defaultValue = "createdAt") String sort) throws NotFoundException {
+            @RequestParam(required = false, defaultValue = "createdAt") String sort,
+    		@RequestParam(name="order", required = false, defaultValue = "DESC") String order)throws NotFoundException {
         Pageable paging = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sort));
         Page<Comment> pageResult = commentRepo.findByPostId(postId, paging);
         Map<String, Object> responseBody = new LinkedHashMap<>();

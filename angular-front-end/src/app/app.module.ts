@@ -24,6 +24,7 @@ import { HeaderComponent } from './Header/header.component';
 import { AppRouting } from './Routing/routing';
 import { PostApiService } from './Service/post.service';
 import { PostCommentComponent } from './Pages/Post/Post-Comments/post-comment.component';
+import { CommnetApiService } from './Service/comment.service';
 
 
 
@@ -51,6 +52,7 @@ import { PostCommentComponent } from './Pages/Post/Post-Comments/post-comment.co
   ],
   providers: [
     PostApiService,
+    CommnetApiService,
     ErrorCodeService,
     { provide: HTTP_INTERCEPTORS, useClass: GlobalHttpInterceptorService, multi: true }
   ],

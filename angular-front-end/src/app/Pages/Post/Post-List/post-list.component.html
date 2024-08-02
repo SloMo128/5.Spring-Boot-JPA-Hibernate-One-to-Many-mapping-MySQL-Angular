@@ -18,12 +18,12 @@
   <div *ngFor="let post of posts| 
             paginate: { itemsPerPage: customerPage, 
             currentPage: pagination + 1, 
-            totalItems: totalCustomers}, let i = index" class="container">
+            totalItems: totalCustomers}, let i = index" class="container border p-3 mb-3">
 
     <h3><strong>{{ post.title }}</strong></h3>
     <small>{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small>
     <p class="mt-2">{{ post.description }}</p>
-    <a href="/post" (click)="saveDataAndNavigate(post.id)">continue reading...</a>
+    <a href="/post" (click)="saveDataAndNavigate(post.id)"><img src="assets/img/message.png"style="width:20px; height:20px;" />continue reading...</a> 
   </div>
 </div>
 

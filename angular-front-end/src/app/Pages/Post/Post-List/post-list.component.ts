@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { FeedBack } from 'src/app/Model/feedback';
 import { Post } from 'src/app/Model/post.model';
 import { PostApiService } from 'src/app/Service/post.service';
@@ -27,7 +26,6 @@ export class PostListComponent implements OnInit {
 
   constructor(
       private postService: PostApiService,
-      //private postProfileSerice: postProfileService,
       private router: Router
   ) { }
   

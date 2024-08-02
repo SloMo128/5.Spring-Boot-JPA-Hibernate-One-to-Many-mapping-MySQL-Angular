@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'post', component: PostCommentComponent },
   /*{ path: 'add', component: AddComponent},
   { path: 'edit', component: EditComponent },*/
-  { path: '', redirectTo: 'list', pathMatch: 'full' },
+  { path: '', redirectTo: 'posts', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 
