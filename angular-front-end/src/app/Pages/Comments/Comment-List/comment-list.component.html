@@ -4,29 +4,58 @@
 </div>
 
 <div *ngIf="isLoadingPage">
+  <div class="container border p-3 mb-3">
+    <div>
+
+      <form [formGroup]="addForm" (ngSubmit)="addCommnet(postId)">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" id="username" formControlName="username" class="form-control"
+            [ngClass]="{'is-invalid': username.invalid && username.touched}">
+          <div *ngIf="username.invalid && username.touched" class="invalid-feedback">
+            <div *ngIf="username.errors?.required">Username is required.</div>
+            <div *ngIf="username.errors?.minlength">Username must be at least 2 characters long.</div>
+            <div *ngIf="username.errors?.maxlength">Username cannot be more than 25 characters long.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="body" class="form-label">Comment</label>
+          <textarea id="body" formControlName="body" class="form-control"
+            [ngClass]="{'is-invalid': body.invalid && body.touched}"></textarea>
+          <div *ngIf="body.invalid && body.touched" class="invalid-feedback">
+            <div *ngIf="body.errors?.required">Comment is required.</div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">Add Commnet</button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isLoadingPage">
   <button type="button" (click)="pageDirection()" class="btn btn-light">
     <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
     <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
   </button>
 </div>
 
-<div *ngIf="isLoadingPage">
-  <div *ngFor="let comm of comments| 
+  <div *ngIf="isLoadingPage">
+    <div *ngFor="let comm of comments| 
             paginate: { itemsPerPage: customerPage, 
             currentPage: pagination + 1, 
             totalItems: totalCustomers}, let i = index" class="container border p-3 mb-3">
 
-    <div style="display: flex; align-items: center">
-      <p style="color: #2ca9bc;"><strong>{{ comm.username }}</strong></p>&nbsp;
-      <img src="assets/img/edit.png" style="width:20px; height:20px;" />&nbsp;
-      <a (click)="deliteComm(comm.id, i)"><img src="assets/img/delete.png" style="width:20px; height:20px;" /></a>&nbsp;
-      <small>{{ comm.createdAt | date:'fullDate' }} - {{ comm.createdAt | date:'mediumTime' }}</small>
+      <div style="display: flex; align-items: center">
+        <p style="color: #2ca9bc;"><strong>{{ comm.username }}</strong></p>&nbsp;
+        <img src="assets/img/edit.png" style="width:20px; height:20px;" />&nbsp;
+        <a (click)="deliteComm(comm.id, i)"><img src="assets/img/delete.png"
+            style="width:20px; height:20px;" /></a>&nbsp;
+        <small>{{ comm.createdAt | date:'fullDate' }} - {{ comm.createdAt | date:'mediumTime' }}</small>
+      </div>
+      <p>{{ comm.body }} </p>
     </div>
-
-    <p>{{ comm.body }} </p>
   </div>
-</div>
 
-<div *ngIf="isLoadingPage" class="d-flex justify-content-center">
-  <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
-</div>
+  <div *ngIf="isLoadingPage" class="d-flex justify-content-center">
+    <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
+  </div>

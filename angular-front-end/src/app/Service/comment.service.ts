@@ -24,16 +24,16 @@ export class CommnetApiService {
         return this.http.put<Post>(this.baseURL + 'post/put/' + id, body, { 'headers': headers })
     }*/
 
-    add(emp: Post): Observable<Post> {
+    add(postId: string, comment: Post): Observable<Post> {
         const headers = { 'content-type': 'application/json' }
-        const body = JSON.stringify(emp);
+        const body = JSON.stringify(comment);
         console.log(body)
-        return this.http.post<Post>(this.baseURL + 'add', body, { 'headers': headers })
+        return this.http.post<Post>(this.baseURL + 'posts/commentspost/' + postId, body, { 'headers': headers })
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    /*deletePost(id: string): Observable<Post> {
-        return this.http.delete<Post>(this.baseURL + 'delete/' + id)
-    }*/
+    deletePost(postId: string, commentId: string): Observable<Post> {
+        return this.http.delete<Post>(this.baseURL + `/postsdelite/${postId}/commentsdelite/${commentId}`)
+    }
 
 }

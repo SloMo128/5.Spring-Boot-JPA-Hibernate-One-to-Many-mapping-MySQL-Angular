@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FeedBack } from 'src/app/Model/feedback';
 import { CommnetApiService } from 'src/app/Service/comment.service';
@@ -14,23 +15,23 @@ export class CommentListComponent implements OnInit {
   isLoading: boolean = true;
   isLoadingPage: boolean = false;
   postId: string;
+  addForm: FormGroup;
 
   totalCustomers: number = 0;
   pagination: number = 0;
   customerPage: number = 5;
-  sortField: string = "username";
+  sortField: string = "createdAt";
   sortOrder: string = "DESC";
-  page = this.sortOrder
-  chengePageIco: boolean = false
 
   constructor(
     private commnetService: CommnetApiService,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder,
   ) { }
 
   pageDirection(page) {
     this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
-    this.getListCommnets(this.postId);
+    this.getListbodys(this.postId);
   }
 
   ngOnInit(): void {
@@ -40,28 +41,36 @@ export class CommentListComponent implements OnInit {
       this.router.navigate(['']);
       return;
     }
-    this.getListCommnets(this.postId);
+
+    this.addForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+      body: ['', [Validators.required]],
+    });
+
+    this.getListbodys(this.postId);
     this.feedback = { feedbackType: '', feedbackmsg: '' };
 
   }
 
-  getListCommnets(postId: string): void {
+  getListbodys(postId: string): void {
     this.comments = [];
-    let params = new HttpParams;
+    let params = new HttpParams();
 
     params = params.append('page', "" + this.pagination);
     params = params.append('size', "" + this.customerPage);
     params = params.append('sort', this.sortField);
-    params = params.append('order', this.sortOrder)
+    params = params.append('order', this.sortOrder);
 
     this.commnetService.getListCommnet(postId, params).subscribe({
       next: (data: any) => {
-        if (data.length !== 0) {
+        if (data.comments.length !== 0) {
           this.comments = data.comments;
-          this.totalCustomers = data.commentRepo;
+          this.totalCustomers = data.totalComments; // Ensure your backend returns this value
           this.isLoadingPage = true;
           this.isLoading = false;
-        };
+        } else {
+          this.isLoading = false;
+        }
       },
       error: (err: any) => {
         console.log(err);
@@ -70,7 +79,6 @@ export class CommentListComponent implements OnInit {
           feedbackType: err.feedbackType,
           feedbackmsg: err.feedbackmsg,
         };
-        console.log(JSON.stringify(this.feedback));
         throw new Error();
       },
       complete: () => {
@@ -81,7 +89,39 @@ export class CommentListComponent implements OnInit {
 
   renderPage(event: number) {
     this.pagination = event - 1;
-    this.getListCommnets(this.postId);
+    this.getListbodys(this.postId);
+  }
+
+  addCommnet(postId: string) {
+    this.commnetService.add(postId, this.addForm.value).subscribe({
+      next: (data) => {
+        console.log(this.addForm.value);
+        this.feedback = { feedbackType: 'success', feedbackmsg: 'Comment added successfully' };
+        setTimeout(() => this.router.navigate(['/list']), 4000); // Navigate to the list or some other view
+      },
+      error: (err: any) => {
+        console.log(err);
+        this.isLoadingPage = true;
+        this.isLoading = false;
+        this.feedback = {
+          feedbackType: err.feedbackType,
+          feedbackmsg: err.feedbackmsg,
+        };
+        throw new Error();
+      },
+      complete: () => {
+        this.isLoadingPage = true;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  get username() {
+    return this.addForm.get('username');
+  }
+
+  get body() {
+    return this.addForm.get('body');
   }
 
   /*deletepost(id: string, index) {
@@ -101,10 +141,5 @@ export class CommentListComponent implements OnInit {
           });
       }
   }*/
-
-  saveDataAndNavigate(id: string) {
-    localStorage.setItem('postId', id);
-    this.router.navigate(['/post/']);
-  }
 
 }

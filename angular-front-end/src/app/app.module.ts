@@ -13,11 +13,10 @@ import { PageNotFoundComponent } from './Pages/Comments/Page-not-found/page.not.
 
 import { PostListComponent } from './Pages/Post/Post-List/post-list.component';
 import { PostEditComponent } from './Pages/Post/Post-Edit/post-edit.component';
-import { PostUpdateComponent } from './Pages/Post/Post-Update/post-update.component';
+import { PostAddComponent } from './Pages/Post/Post-Add/post-update.component';
 
 import { CommentListComponent } from './Pages/Comments/Comment-List/comment-list.component';
 import { CommentEditComponent } from './Pages/Comments/Comment-Edit/comment-edit.component';
-import { CommentUpdateComponent } from './Pages/Comments/Comment-Update/comment-update.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './Header/header.component';
@@ -34,10 +33,9 @@ import { CommnetApiService } from './Service/comment.service';
     PageNotFoundComponent,
     PostListComponent,
     PostEditComponent,
-    PostUpdateComponent,
+    PostAddComponent,
     CommentListComponent,
     CommentEditComponent,
-    CommentUpdateComponent,
     HeaderComponent,
     PostCommentComponent
     ],

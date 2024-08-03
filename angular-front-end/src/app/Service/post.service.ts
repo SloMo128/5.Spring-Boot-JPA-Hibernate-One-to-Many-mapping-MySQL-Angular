@@ -33,7 +33,7 @@ export class PostApiService {
     }
 
     /*deletePost(id: string): Observable<Post> {
-        return this.http.delete<Post>(this.baseURL + 'delete/' + id)
+        return this.http.delete<ZPost>(this.baseURL + 'delete/' + id)
     }*/
 
 }

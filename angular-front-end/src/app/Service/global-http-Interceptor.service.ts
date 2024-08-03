@@ -17,7 +17,7 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error(error);
+        console.error(error.error.status);
 
         let feedback: FeedBack = {
           feedbackType: 'error',
@@ -35,11 +35,6 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
             return throwError(feedback);
 
           } else if (error.status === 400) {
-            /*if (error.error.errors.length > 0) {
-              let errorMessages = error.error.errors.map(err => `${err.field}: ${err.message}`);
-              feedback.feedbackmsg = errorMessages.join("\n"); // For text output
-              // feedback.feedbackmsg = errorMessages.join("<br>"); // For HTML output
-            }*/
             if (error.error.errors.length > 0) {
               let errorMessage = ""
               for (let i = 0; i < error.error.errors.length; i++) {
@@ -47,6 +42,10 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
               }
               feedback.feedbackmsg = errorMessage;
             }
+            return throwError(feedback);
+          }
+          else if(error.status === 404){
+            feedback.feedbackmsg = '404: Nessn dato trovato';
             return throwError(feedback);
           }
           else {
