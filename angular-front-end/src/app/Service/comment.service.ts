@@ -32,8 +32,8 @@ export class CommnetApiService {
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    deletePost(postId: string, commentId: string): Observable<Post> {
-        return this.http.delete<Post>(this.baseURL + `/postsdelite/${postId}/commentsdelite/${commentId}`)
+    deleteCommnet(postId: string, commentId: string): Observable<Post> {
+        return this.http.delete<Post>(this.baseURL + `postsdelite/${postId}/commentsdelite/${commentId}`)
     }
 
 }

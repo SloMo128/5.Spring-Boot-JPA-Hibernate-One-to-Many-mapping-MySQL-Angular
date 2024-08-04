@@ -14,6 +14,7 @@ export class CommentListComponent implements OnInit {
   feedback = new FeedBack("", "");
   isLoading: boolean = true;
   isLoadingPage: boolean = false;
+  isLoadingPageAdd: boolean = false;
   postId: string;
   addForm: FormGroup;
 
@@ -31,7 +32,7 @@ export class CommentListComponent implements OnInit {
 
   pageDirection(page) {
     this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
-    this.getListbodys(this.postId);
+    this.getListCommnet(this.postId);
   }
 
   ngOnInit(): void {
@@ -47,15 +48,15 @@ export class CommentListComponent implements OnInit {
       body: ['', [Validators.required]],
     });
 
-    this.getListbodys(this.postId);
+    this.getListCommnet(this.postId);
     this.feedback = { feedbackType: '', feedbackmsg: '' };
 
   }
 
-  getListbodys(postId: string): void {
+  getListCommnet(postId: string): void {
     this.comments = [];
     let params = new HttpParams();
-
+    console.log(postId);
     params = params.append('page', "" + this.pagination);
     params = params.append('size', "" + this.customerPage);
     params = params.append('sort', this.sortField);
@@ -66,19 +67,23 @@ export class CommentListComponent implements OnInit {
         if (data.comments.length !== 0) {
           this.comments = data.comments;
           this.totalCustomers = data.totalComments; // Ensure your backend returns this value
-          this.isLoadingPage = true;
-          this.isLoading = false;
-        } else {
-          this.isLoading = false;
         }
+        this.isLoadingPage = true;
+        this.isLoading = false;
+        this.isLoadingPageAdd = true;
       },
       error: (err: any) => {
         console.log(err);
-        this.isLoading = false;
-        this.feedback = {
-          feedbackType: err.feedbackType,
-          feedbackmsg: err.feedbackmsg,
-        };
+        if(err.feedbackmsg !== "404: Nessn dato trovato"){
+          this.feedback = {
+            feedbackType: err.feedbackType,
+            feedbackmsg: err.feedbackmsg,
+          };
+        }
+        else{
+          this.isLoadingPageAdd = true;
+        }
+        
         throw new Error();
       },
       complete: () => {
@@ -89,7 +94,7 @@ export class CommentListComponent implements OnInit {
 
   renderPage(event: number) {
     this.pagination = event - 1;
-    this.getListbodys(this.postId);
+    this.getListCommnet(this.postId);
   }
 
   addCommnet(postId: string) {
@@ -97,7 +102,7 @@ export class CommentListComponent implements OnInit {
       next: (data) => {
         console.log(this.addForm.value);
         this.feedback = { feedbackType: 'success', feedbackmsg: 'Comment added successfully' };
-        setTimeout(() => this.router.navigate(['/list']), 4000); // Navigate to the list or some other view
+        location.reload();
       },
       error: (err: any) => {
         console.log(err);
@@ -124,11 +129,12 @@ export class CommentListComponent implements OnInit {
     return this.addForm.get('body');
   }
 
-  /*deletepost(id: string, index) {
+  deleteCommnet(postId: string, commnetId: string, index) {
       if (window.confirm("Are you sure you want to delete this post?")) {
-          this.postService.deletepost(id).subscribe({
+          this.commnetService.deleteCommnet(postId, commnetId).subscribe({
               next: (data) => {
-                  this.post.splice(index, 1);
+                  this.comments.splice(index, 1);
+                  location.reload();
               },
               error: (err: any) => {
                   console.log(err);
@@ -140,6 +146,5 @@ export class CommentListComponent implements OnInit {
               }
           });
       }
-  }*/
-
+  }
 }
