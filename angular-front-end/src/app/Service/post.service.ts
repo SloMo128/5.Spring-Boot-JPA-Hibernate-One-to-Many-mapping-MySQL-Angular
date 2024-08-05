@@ -32,8 +32,8 @@ export class PostApiService {
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    /*deletePost(id: string): Observable<Post> {
-        return this.http.delete<ZPost>(this.baseURL + 'delete/' + id)
-    }*/
+    deletePost(id: string): Observable<void> {
+        return this.http.delete<void>(this.baseURL + "post/delete/" + id);
+      }
 
 }

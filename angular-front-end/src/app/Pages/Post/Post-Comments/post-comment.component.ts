@@ -77,6 +77,7 @@ export class PostCommentComponent implements OnInit {
           next: (data) => {
             this.feedback = { feedbackType: 'success', feedbackmsg: 'Post updated successfully' };
             this.editingPostId = null;
+            location.reload();
           },
           error: (err: any) => {
             console.log(err);
@@ -102,5 +103,26 @@ export class PostCommentComponent implements OnInit {
     
       cancelEdit() {
         this.editingPostId = null;
+      }
+
+      deletePost() {
+        if (confirm('Sei sicuro di voler eliminare questo post e tutti i commenti?')) {
+          this.postService.deletePost(this.postId).subscribe({
+            next: () => {
+              this.feedback = { feedbackType: 'success', feedbackmsg: 'Post e commenti eliminati con successo' };
+              this.router.navigate(['']); // Naviga via dalla pagina corrente
+            },
+            error: (err: any) => {
+              console.log(err);
+              this.feedback = {
+                feedbackType: err.feedbackType,
+                feedbackmsg: err.feedbackmsg,
+              };
+            },
+            complete: () => {
+              this.isLoading = false;
+            },
+          });
+        }
       }
 }
