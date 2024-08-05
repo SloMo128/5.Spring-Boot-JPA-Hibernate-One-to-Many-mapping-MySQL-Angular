@@ -10,7 +10,8 @@ const routes: Routes = [
   { path: 'posts', component: PostListComponent },
   { path: 'post', component: PostCommentComponent },
   /*{ path: 'add', component: AddComponent},
-  { path: 'edit', component: EditComponent },*/
+  { path: 'edit', component: EditComponent }, */
+
   { path: '', redirectTo: 'posts', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];

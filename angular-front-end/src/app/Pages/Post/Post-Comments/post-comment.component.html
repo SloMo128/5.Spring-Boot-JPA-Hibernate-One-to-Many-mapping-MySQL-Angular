@@ -9,16 +9,28 @@
 
 <div>
   <div class="container">
-    <br/>
+    <br />
     <div style="display: flex; align-items: center">
-      <img src="assets/img/user.png" style="width:50px; height:50px;"/>&nbsp;
+      <img src="assets/img/user.png" style="width:50px; height:50px;" />&nbsp;
       <h3 style="margin: 0;"><strong>{{ post.title }}</strong></h3>&nbsp;
-      <img src="assets/img/edit.png" style="width:20px; height:20px;"/>&nbsp;
+      <a (click)="setEditingPost(post)">
+        <img src="assets/img/edit.png" style="width:20px; height:20px;" />&nbsp;
+      </a>
       <img src="assets/img/delete.png" style="width:20px; height:20px;" />&nbsp;
       <small>{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small>
+    </div>
   </div>
-  
+
+  <div style="display: flex; align-items: center" *ngIf="editingPostId === post.id; else displayBody">
+    <form [formGroup]="editForm" (ngSubmit)="editPost(postId)">
+      <textarea class="form-control mb-2" formControlName="content"></textarea>
+      <button type="submit" class="btn btn-success btn-sm" [disabled]="editForm.invalid">Save</button>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+  <ng-template #displayBody>
     <p class="mt-2">{{ post.content }}</p>
-  </div>
+  </ng-template>
 </div>
+
 <app-comment-list></app-comment-list>

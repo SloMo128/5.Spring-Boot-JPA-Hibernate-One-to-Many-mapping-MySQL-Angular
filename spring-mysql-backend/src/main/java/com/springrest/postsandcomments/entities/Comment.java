@@ -28,7 +28,7 @@ public class Comment {
 	//@Lob
 	private String body;
 
-	@NotBlank(message = "username can't be empty")
+	//@NotBlank(message = "username can't be empty")
 	@Size(max = 25, message = "username can be max 25 characters long")
 	private String username;
 
@@ -59,15 +59,5 @@ public class Comment {
 				+ "username=" + this.getUsername() + ", " 
 				+ "post_id=" + this.getPost().getId() + ", " 
 				+ "createdAt=" + this.getCreatedAt() + "]";
-	}
-
-	public Object getContent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setContent(Object content) {
-		// TODO Auto-generated method stub
-		
 	}
 }

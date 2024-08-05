@@ -7,6 +7,38 @@
   <span class="sr-only"></span>
 </div>
 
+<div class="container mt-4">
+  <!-- Toggle visibility button -->
+  <div (click)="toggleVisibility()" style="cursor: pointer;" class="mb-4">
+    <h2 class="d-flex align-items-center">
+      <span class="mr-2">➤</span> Create Post
+    </h2>
+  </div>
+
+  <!-- Conditional form display -->
+  <div *ngIf="visibility">
+    <form [formGroup]="addForm" (ngSubmit)="addPost()" class="border p-4 rounded bg-light">
+      <div class="form-group">
+        <label for="title">Title:</label>
+        <input id="title" formControlName="title" type="text" placeholder="Title" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <input id="description" formControlName="description" type="text" placeholder="Description" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="content">Content:</label>
+        <textarea id="content" formControlName="content" placeholder="Content" rows="4" class="form-control"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="!addForm.valid">Post</button>
+    </form>
+  </div>
+</div>
+
+
+
 <div *ngIf="isLoadingPage">
   <button type="button" (click)="pageDirection()" class="btn btn-light">
     <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
@@ -23,7 +55,8 @@
     <h3><strong>{{ post.title }}</strong></h3>
     <small>{{ post.createdAt | date:'fullDate' }} - {{ post.createdAt | date:'mediumTime' }}</small>
     <p class="mt-2">{{ post.description }}</p>
-    <a href="/post" (click)="saveDataAndNavigate(post.id)"><img src="assets/img/message.png"style="width:20px; height:20px;" />continue reading...</a> 
+    <a href="/post" (click)="saveDataAndNavigate(post.id)"><img src="assets/img/message.png"
+        style="width:20px; height:20px;" />continue reading...</a>
   </div>
 </div>
 

@@ -94,6 +94,8 @@ public class CommentController {
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
             @Valid @RequestBody Comment commentDetails) {
+    	
+    	//System.out.println(commentDetails.getContent());
         
         // Verifica se il post esiste
         if (!postRepo.existsById(postId)) {
@@ -105,7 +107,8 @@ public class CommentController {
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
             // Aggiorna i dettagli del commento
-            comment.setContent(commentDetails.getContent());
+            
+            comment.setBody(commentDetails.getBody());
             // Salva il commento aggiornato
             Comment updatedComment = commentRepo.save(comment);
             return new ResponseEntity<>(updatedComment, HttpStatus.OK);

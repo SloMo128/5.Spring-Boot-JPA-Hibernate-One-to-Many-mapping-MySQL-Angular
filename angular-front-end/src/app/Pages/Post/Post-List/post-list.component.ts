@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FeedBack } from 'src/app/Model/feedback';
 import { Post } from 'src/app/Model/post.model';
@@ -15,6 +16,9 @@ export class PostListComponent implements OnInit {
   feedback = new FeedBack("", "");
   isLoading: boolean = true;
   isLoadingPage: boolean = false;
+  addForm: FormGroup;
+  editForm: FormGroup;
+  visibility = false;
   
   totalCustomers: number = 0;
   pagination: number = 0;
@@ -26,7 +30,8 @@ export class PostListComponent implements OnInit {
 
   constructor(
       private postService: PostApiService,
-      private router: Router
+      private router: Router,
+      private fb: FormBuilder,
   ) { }
   
   pageDirection(page){
@@ -34,9 +39,20 @@ export class PostListComponent implements OnInit {
     this.getList();
   }
 
+  toggleVisibility() {
+    this.visibility = !this.visibility;
+  }
+
   ngOnInit(): void {
       this.getList();
       this.feedback = { feedbackType: '', feedbackmsg: '' };
+
+      this.addForm = this.fb.group({
+        title: ['', [Validators.required]],
+        description: ['', [Validators.required]],
+        content: ['', [Validators.required]],
+        createdAt: [''],
+      });
 
       localStorage.removeItem('postId');
   }
@@ -80,6 +96,30 @@ export class PostListComponent implements OnInit {
     this.getList();
   }
 
+  addPost() {
+    this.postService.add(this.addForm.value).subscribe({
+      next: (data) => {
+        console.log(this.addForm.value);
+        this.feedback = { feedbackType: 'success', feedbackmsg: 'Comment added successfully' };
+        location.reload();
+      },
+      error: (err: any) => {
+        console.log(err);
+        this.isLoadingPage = true;
+        this.isLoading = false;
+        this.feedback = {
+          feedbackType: err.feedbackType,
+          feedbackmsg: err.feedbackmsg,
+        };
+        throw new Error();
+      },
+      complete: () => {
+        this.isLoadingPage = true;
+        this.isLoading = false;
+      },
+    });
+  }
+
   /*deletepost(id: string, index) {
       if (window.confirm("Are you sure you want to delete this post?")) {
           this.postService.deletepost(id).subscribe({
@@ -103,4 +143,19 @@ export class PostListComponent implements OnInit {
       this.router.navigate(['/post/']);
   }
 
+  get title() {
+    return this.addForm.get('title');
+  }
+
+  get description() {
+    return this.addForm.get('description');
+  }
+
+  get content() {
+    return this.addForm.get('content');
+  }
+
+  get createdAt() {
+    return this.addForm.get('createdAt');
+  }
 }

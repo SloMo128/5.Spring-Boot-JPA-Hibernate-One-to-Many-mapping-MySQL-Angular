@@ -4,27 +4,27 @@ import { Observable, throwError } from 'rxjs';
 import { Post } from '../Model/post.model';
 
 @Injectable()
-export class CommnetApiService {
+export class CommentApiService {
 
     baseURL: string = "http://localhost:8080/spring-rest-api/";
 
     constructor(private http: HttpClient){}
 
-    getListCommnet(postId: string, params: HttpParams): Observable<Post[]> {
+    getListComment(postId: string, params: HttpParams): Observable<Post[]> {
         return this.http.get<Post[]>(this.baseURL + 'posts/comments/' + postId,  { params })
     }
 
-    getCommnet(commnetId: string): Observable<Post> {
-        return this.http.get<Post>(this.baseURL + 'commnet/' + commnetId)
+    getComment(commentId: string): Observable<Post> {
+        return this.http.get<Post>(this.baseURL + 'comment/' + commentId)
     }
 
-    /*update(id: string, emp: Post): Observable<Post> {
+    editComment(postId: string, commentId:string, bodyComm: Post): Observable<Post> {
         const headers = { 'content-type': 'application/json' }
-        const body = JSON.stringify(emp);
-        return this.http.put<Post>(this.baseURL + 'post/put/' + id, body, { 'headers': headers })
-    }*/
+        const body = JSON.stringify(bodyComm);
+        return this.http.put<Post>(this.baseURL + `posts/${postId}/comments/${commentId}`,body, { 'headers': headers } )
+    }
 
-    add(postId: string, comment: Post): Observable<Post> {
+    addComment(postId: string, comment: Post): Observable<Post> {
         const headers = { 'content-type': 'application/json' }
         const body = JSON.stringify(comment);
         console.log(body)
@@ -32,7 +32,7 @@ export class CommnetApiService {
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    deleteCommnet(postId: string, commentId: string): Observable<Post> {
+    deletecomment(postId: string, commentId: string): Observable<Post> {
         return this.http.delete<Post>(this.baseURL + `postsdelite/${postId}/commentsdelite/${commentId}`)
     }
 

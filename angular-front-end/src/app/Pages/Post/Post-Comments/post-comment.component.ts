@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FeedBack } from 'src/app/Model/feedback';
 import { Post } from 'src/app/Model/post.model';
@@ -16,10 +17,13 @@ export class PostCommentComponent implements OnInit {
     isLoading: boolean = true;
     isLoadingPage: boolean = false;
     postId: string;
+    editForm: FormGroup;
+    editingPostId: string = null
 
     constructor(
         private postService: PostApiService,
-        private router: Router
+        private router: Router,
+        private fb: FormBuilder,
     ) { }
 
 
@@ -31,6 +35,11 @@ export class PostCommentComponent implements OnInit {
             return;
         }
         this.getPost(this.postId);
+
+        this.editForm = this.fb.group({
+            content: ['', [Validators.required]],
+          });
+
         this.feedback = { feedbackType: '', feedbackmsg: '' };
 
         //localStorage.removeItem('postId');
@@ -62,4 +71,36 @@ export class PostCommentComponent implements OnInit {
             },
         });
     }
+
+    editPost(postId: string) {
+        this.postService.editPost(postId, this.editForm.value).subscribe({
+          next: (data) => {
+            this.feedback = { feedbackType: 'success', feedbackmsg: 'Post updated successfully' };
+            this.editingPostId = null;
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.isLoadingPage = true;
+            this.isLoading = false;
+            this.feedback = {
+              feedbackType: err.feedbackType,
+              feedbackmsg: err.feedbackmsg,
+            };
+            throw new Error();
+          },
+          complete: () => {
+            this.isLoadingPage = true;
+            this.isLoading = false;
+          },
+        });
+      }
+    
+      setEditingPost(post: any) {
+        this.editingPostId = post.id;
+        this.editForm.patchValue({ content: post.content });
+      }
+    
+      cancelEdit() {
+        this.editingPostId = null;
+      }
 }

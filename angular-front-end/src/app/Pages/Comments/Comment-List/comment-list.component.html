@@ -5,7 +5,7 @@
 
 <div *ngIf="isLoadingPageAdd" class="container border p-3 mb-3">
   <div class="card-header">
-    <h5>Add a Comment</h5>
+    <h5>Add Comment</h5>
   </div>
   <div>
     <form [formGroup]="addForm" (ngSubmit)="addCommnet(postId)">
@@ -28,30 +28,51 @@
   </div>
 </div>
 
-<div *ngIf="isLoadingPage">
-  <button type="button" (click)="pageDirection()" class="btn btn-light">
-    <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
-    <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
-  </button>
-</div>
+<div *ngIf="comments.length > 0; else noComments">
+  <div *ngIf="isLoadingPage">
+    <button type="button" (click)="pageDirection()" class="btn btn-light">
+      <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
+      <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
+    </button>
+  </div>
 
-<div *ngIf="isLoadingPage">
-  <div *ngFor="let comm of comments| 
+
+  <div *ngIf="isLoadingPage">
+    <div *ngFor="let comm of comments| 
             paginate: { itemsPerPage: customerPage, 
             currentPage: pagination + 1, 
             totalItems: totalCustomers}, let i = index" class="container border p-3 mb-3">
 
-    <div style="display: flex; align-items: center">
-      <p style="color: #2ca9bc;"><strong>{{ comm.username }}</strong></p>&nbsp;
-      <img src="assets/img/edit.png" style="width:20px; height:20px;" />&nbsp;
-      <a (click)="deleteCommnet(postId, comm.id, i)"><img src="assets/img/delete.png"
-          style="width:20px; height:20px;" /></a>&nbsp;
-      <small>{{ comm.createdAt | date:'fullDate' }} - {{ comm.createdAt | date:'mediumTime' }}</small>
+      <div style="display: flex; align-items: center">
+        <p style="color: #2ca9bc;"><strong>{{ comm.username }}</strong></p>&nbsp;
+
+        <a (click)="setEditingComment(comm)">
+          <img src="assets/img/edit.png" style="width:20px; height:20px;" />
+        </a>&nbsp;
+
+        <a (click)="deleteCommnet(postId, comm.id, i)">
+          <img src="assets/img/delete.png" style="width:20px; height:20px;" /></a>&nbsp;
+
+        <small>{{ comm.createdAt | date:'fullDate' }} - {{ comm.createdAt | date:'mediumTime' }}</small>
+      </div>
+      <div *ngIf="editingCommentId === comm.id; else displayBody">
+        <form [formGroup]="editForm" (ngSubmit)="editCommnet(postId, comm.id)">
+          <textarea class="form-control mb-2" formControlName="body"></textarea>
+          <button type="submit" class="btn btn-success btn-sm" [disabled]="editForm.invalid">Save</button>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+        </form>
+      </div>
+      <ng-template #displayBody>
+        <p>{{ comm.body }}</p>
+      </ng-template>
     </div>
-    <p>{{ comm.body }} </p>
+  </div>
+
+
+  <div *ngIf="isLoadingPage" class="d-flex justify-content-center">
+    <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
   </div>
 </div>
-
-<div *ngIf="isLoadingPage" class="d-flex justify-content-center">
-  <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
-</div>
+<ng-template #noComments class="d-flex justify-content-center">
+  <p>No comments yet.</p>
+</ng-template>

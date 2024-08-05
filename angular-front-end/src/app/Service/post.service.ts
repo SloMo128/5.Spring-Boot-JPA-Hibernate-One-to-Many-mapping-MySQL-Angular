@@ -18,17 +18,17 @@ export class PostApiService {
         return this.http.get<Post>(this.baseURL + 'post/' + id)
     }
 
-    /*update(id: string, emp: Post): Observable<Post> {
+    editPost(postId: string, bodyPost: Post): Observable<Post> {
         const headers = { 'content-type': 'application/json' }
-        const body = JSON.stringify(emp);
-        return this.http.put<Post>(this.baseURL + 'post/put/' + id, body, { 'headers': headers })
-    }*/
+        const body = JSON.stringify(bodyPost);
+        return this.http.put<Post>(this.baseURL + "post/put/" + postId,body, { 'headers': headers } )
+    }
 
     add(emp: Post): Observable<Post> {
         const headers = { 'content-type': 'application/json' }
         const body = JSON.stringify(emp);
         console.log(body)
-        return this.http.post<Post>(this.baseURL + 'add', body, { 'headers': headers })
+        return this.http.post<Post>(this.baseURL + 'post', body, { 'headers': headers })
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
